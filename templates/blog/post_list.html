@@ -5,7 +5,13 @@
     <title>Title</title>
 </head>
 <body>
-{{ category }}
-
+    {% for category in categories %}
+    <p><a href="{% url 'category' category.slug %}"> {{ category.name }}</a></p>
+    {% endfor %}
+    {% for post in posts %}
+    <h1><a href="{{ post.get_absolute_url }}"> {{ post.title }}</a></h1>
+    <h3>{{ post.mini_text }}</h3>
+    <p>{{ post.published_date }}</p>
+    {% endfor %}
 </body>
 </html>
