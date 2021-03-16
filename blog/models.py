@@ -67,6 +67,9 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse('detail_post', kwargs={'category': self.category.slug, 'slug': self.slug})
 
+    def get_comment_count(self):
+        return self.comments.count()
+
     def __str__(self):
         return self.title
 
@@ -77,7 +80,7 @@ class Post(models.Model):
 
 class Comment(models.Model):
     author = models.ForeignKey(User, verbose_name='Автор', on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, verbose_name='Статья', on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, verbose_name='Статья', on_delete=models.CASCADE, related_name='comments')
     text = models.TextField('Комментарий', max_length=1000)
     created_date = models.DateTimeField(auto_now_add=True, auto_now=False)
     moderation = models.BooleanField(default=True)
@@ -88,19 +91,3 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
