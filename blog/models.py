@@ -31,6 +31,9 @@ class Category(MPTTModel):
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
 
+    def get_absolute_url(self):
+        return reverse('category', kwargs={'category_slug': self.slug})
+
 
 class Tag(models.Model):
     name = models.CharField('Имя', max_length=100)
@@ -72,6 +75,9 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_category_template(self):
+        return self.category.template
 
     class Meta:
         verbose_name = 'Пост'
