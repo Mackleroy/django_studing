@@ -1,12 +1,14 @@
-from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views.generic.base import View
-from .models import Category, Post, Comment
+
+from .models import Category, Post
+from .forms import CommentForm
 
 
 class PostListView(View):
     """Вывод статей категории"""
+
     def get_queryset(self):
         return Post.objects.filter(published=True, published_date__lte=timezone.now())  # У мишани datetime.now()
 
@@ -23,9 +25,9 @@ class PostListView(View):
         else:
             template = 'blog/post_list.html'
         return render(request, template, {
-                'categories': category_list,
-                'posts': posts
-            })
+            'categories': category_list,
+            'posts': posts
+        })
 
         # CategoryView обработка родительских категорий
         # chosen_category = Category.objects.get(slug=category_slug)
@@ -48,4 +50,19 @@ class PostDetailView(View):
     def get(self, request, **kwargs):
         category_list = Category.objects.filter(published=True)
         post = get_object_or_404(Post, slug=kwargs.get('slug'))
-        return render(request, post.template, {'post': post, 'categories': category_list})
+        form = CommentForm()
+        return render(request, post.template, {
+            'post': post,
+            'categories': category_list,
+            'form': form
+        })
+
+    def post(self, request, **kwargs):
+        print(request.POST)
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.post = Post.objects.get(slug=kwargs.get('slug'))
+            form.author = request.user
+            form.save()
+        return redirect(request.path)
