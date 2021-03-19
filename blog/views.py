@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views.generic.base import View
 
-from .models import Category, Post
+from .models import Post
 from .forms import CommentForm
 
 
@@ -13,7 +13,6 @@ class PostListView(View):
         return Post.objects.filter(published=True, published_date__lte=timezone.now())  # У мишани datetime.now()
 
     def get(self, request, category_slug=None, slug=None):
-        category_list = Category.objects.filter(published=True)
         if category_slug is not None:
             posts = self.get_queryset().filter(category__slug=category_slug, category__published=True)
         elif slug is not None:
@@ -24,10 +23,7 @@ class PostListView(View):
             template = posts.first().get_category_template()
         else:
             template = 'blog/post_list.html'
-        return render(request, template, {
-            'categories': category_list,
-            'posts': posts
-        })
+        return render(request, template, {'posts': posts})
 
         # CategoryView обработка родительских категорий
         # chosen_category = Category.objects.get(slug=category_slug)
@@ -48,12 +44,10 @@ class PostListView(View):
 
 class PostDetailView(View):
     def get(self, request, **kwargs):
-        category_list = Category.objects.filter(published=True)
         post = get_object_or_404(Post, slug=kwargs.get('slug'))
         form = CommentForm()
         return render(request, post.template, {
             'post': post,
-            'categories': category_list,
             'form': form
         })
 

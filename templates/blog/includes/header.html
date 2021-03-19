@@ -1,0 +1,19 @@
+{% load blog_tags %}
+{% load mptt_tags %}
+{% categories as category_list %}              {#count=int  parent=True  before as#}
+{#        {% for category in category_list %}#}
+{#        <p><a href="{{ category.get_absolute_url }}"> {{ category }}</a></p>#}
+{#        {% endfor %}#}
+<ul class="root">
+    {% recursetree category_list %}
+        <li>
+        {{ node.name }}
+        {% if not node.is_leaf_node %}
+            <ul class="children">
+                {{ children }}
+            </ul>
+        {% endif %}
+        </li>
+    {% endrecursetree %}
+</ul>
+<p><a href="/">Главная</a></p>

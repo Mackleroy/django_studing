@@ -31,6 +31,9 @@ class Category(MPTTModel):
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
 
+    class MPTTMeta:
+        order_insertion_by = ('sort',)
+
     def get_absolute_url(self):
         return reverse('category', kwargs={'category_slug': self.slug})
 
@@ -67,6 +70,11 @@ class Post(models.Model):
     status = models.BooleanField('Для зарегистрированных', default=False)
     sort = models.PositiveIntegerField('Порядок', default=0)
 
+    class Meta:
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Посты'
+        ordering = ['sort', '-published_date']
+
     def get_absolute_url(self):
         return reverse('detail_post', kwargs={'category': self.category.slug, 'slug': self.slug})
 
@@ -78,10 +86,6 @@ class Post(models.Model):
 
     def get_category_template(self):
         return self.category.template
-
-    class Meta:
-        verbose_name = 'Пост'
-        verbose_name_plural = 'Посты'
 
 
 class Comment(models.Model):

@@ -5,9 +5,8 @@
     <title>Title</title>
 </head>
 <body>
-    {% for category in categories %}
-    <p><a href="{% url 'category' category.slug %}"> {{ category.name }}</a></p>
-    {% endfor %}
+    {% include "blog/includes/header.html" %}
+    <hr>
     {% for post in posts %}
     <h1>{{ post.title }}</h1>
     <h3>{{ post.mini_text }}</h3>
