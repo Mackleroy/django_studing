@@ -52,7 +52,6 @@ class PostDetailView(View):
         })
 
     def post(self, request, **kwargs):
-        print(request.POST)
         form = CommentForm(request.POST)
         if form.is_valid():
             form = form.save(commit=False)
