@@ -16,5 +16,10 @@
         </li>
     {% endrecursetree %}
 </ul>
+{% if user.is_authenticated %}
+<p><a href="/accounts/logout/">Выйти</a></p>
+{% else %}
+<p><a href="/accounts/login/">Войти</a></p>
+{% endif %}
 <p><a href="/feedback/">Обратная связь</a></p>
 <p><a href="/">Главная</a></p>
